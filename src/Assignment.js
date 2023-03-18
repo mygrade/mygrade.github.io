@@ -20,10 +20,11 @@ export default function Assignment(props) {
           <InputGroup size="med" className="mb-3">
             <InputGroup.Text id={`weight-${id}`}>Weight</InputGroup.Text>
             <Form.Control
+              name={`weight:${id}`}
               aria-label="Weight"
               aria-describedby="assignment-weight"
               type="number"
-              placeholder={id}
+              placeholder="1-100"
               onChange={onChange}
             />
           </InputGroup>
@@ -33,6 +34,7 @@ export default function Assignment(props) {
           <InputGroup size="med" className="mb-3">
             <InputGroup.Text id={`grade-${id}`}>Grade</InputGroup.Text>
             <Form.Control
+              name={`grade:${id}`}
               aria-label="Grade"
               aria-describedby="assignment-grade"
               type="number"

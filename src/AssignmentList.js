@@ -10,8 +10,8 @@ export default function AssignmentList(props) {
     const newList = [...assignments];
     newList.reverse();
   return (
-    newList.map(id => {
-        return <Assignment key={id} id={id} onChange={onChange}/>
+    newList.map(assignment => {
+        return <Assignment key={assignment.id} id={assignment.id} onChange={onChange}/>
     })
   )
 }

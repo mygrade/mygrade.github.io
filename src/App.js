@@ -9,27 +9,90 @@ import {v4 as uuidv4} from 'uuid'
 
 function App() {
 
-  const [finalGrade, setFinalGrade] = useState(84);
+  const [finalGrade, setFinalGrade] = useState();
+  const [errorMsg, setErrorMsg] = useState("");
+  const [testGrade, setTestGrade] = useState();
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
     addAssignment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[]);
 
-  function updateGrade() {
-    let num = Math.floor(Math.random() * 100) + 1;
-    setFinalGrade(num);
+  useEffect(() => {
+    checkErrors();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[testGrade, assignments]);
+
+  function updateTestGrade(e){
+    setTestGrade(e.target.value);
   }
 
+  function handleChange(e) {
+    const src = e.target.name.split(":",2);
+    const type = src[0];
+    const id = src[1];
+    const newList = [...assignments];
+    for(let i = 0; i < newList.length; i++){
+      if(newList[i].id === id){
+        newList[i][type] = e.target.value;
+        break;
+      }
+    }
+    setAssignments(newList);
+  }
+
+  function checkErrors() {
+    {/* Check test grade */}
+    const testGradeNum = Number(testGrade);
+    let msg = "";
+    if(notValid(testGradeNum)){
+      msg = "Test grade must be integer from 1 - 100.";
+    }
+
+    let weightCount = 0;
+    for(let i = 0; i < assignments.length; i++) {
+      if(notValid(Number(assignments[i].weight))){
+        msg = "Weight must be integer from 1 - 100.";
+        break;
+      } else {
+        weightCount += Number(assignments[i].weight);
+        if(weightCount > 100){
+          msg = "Total weight count cannot be over 100."
+          break;
+        }
+      }
+      if(notValid(Number(assignments[i].grade))){
+        msg = "Grade must be integer from 1 - 100.";
+        break;
+      }
+    }
+    
+    setErrorMsg(msg);
+  }
+
+  function notValid(x){
+    return isNaN(x) || !Number.isInteger(x) || x < 0 || x > 100;
+  }
+  
+  function calculateGrade() {
+
+  }
+  
   function addAssignment() {
     const newID = uuidv4();
-    setAssignments([...assignments, newID]);
+    setAssignments([...assignments, {
+      id: newID,
+      weight: '',
+      grade: ''
+    }]);
   }
 
   function deleteAssignment() {
     if(assignments.length > 1){
-      const newList = assignments.slice(0,-1);
+      const newList = [...assignments];
+      newList.pop();
       setAssignments(newList);
     }
   }
@@ -49,6 +112,8 @@ function App() {
               Test Grade
             </InputGroup.Text>
             <Form.Control
+              name="test-grade"
+              onChange={updateTestGrade}
               aria-label="Test Grade"
               aria-describedby="test-grade-input"
               placeholder="1-100"
@@ -58,7 +123,8 @@ function App() {
 
           {/* FINAL GRADE DISPLAY */}
           <div className="text-center">
-            <b>Final Grade: </b> <label>{finalGrade}</label>
+          <label><b>Final Grade: </b>{finalGrade}</label>
+          <label>{errorMsg}</label>
           </div>
 
           {/* RADIO BUTTONS */}
@@ -95,7 +161,7 @@ function App() {
           </div>
           
           {/* ASSIGNMENT INPUT AREA */}
-          <AssignmentList assignments={assignments} onChange={updateGrade}/> 
+          <AssignmentList assignments={assignments} onChange={handleChange}/> 
 
         </div>
       </div>
