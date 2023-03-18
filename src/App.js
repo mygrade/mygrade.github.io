@@ -93,10 +93,8 @@ function App() {
       let currWeight = Number(curr.weight);
       totalWeight += currWeight
       totalPoints += (currWeight / 100) * Number(curr.grade);
-      setFinalGrade(-1 * Math.round(-1 * totalPoints));
     }
-    console.log("Wight: " + totalWeight);
-    console.log("Points: " + totalPoints);
+    
     totalPoints += ((100 - totalWeight) / 100) * testGrade;
     setFinalGrade(-Math.round(-totalPoints));
   }
