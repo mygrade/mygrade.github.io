@@ -14,9 +14,8 @@ export default function Assignment(props) {
 
   return (
     <Form>
-      <Row>
-
-        <Col>
+      <Row className="justify-content-md-center">
+        <Col xs={0}>
           <InputGroup size="med" className="mb-3">
             <InputGroup.Text id={`weight-${id}`}>Weight</InputGroup.Text>
             <Form.Control
@@ -26,10 +25,10 @@ export default function Assignment(props) {
               type="number"
               placeholder="1-100"
               onChange={onChange}
+              className="limit-input-size"
             />
           </InputGroup>
         </Col>
-
         <Col>
           <InputGroup size="med" className="mb-3">
             <InputGroup.Text id={`grade-${id}`}>Grade</InputGroup.Text>
@@ -40,10 +39,10 @@ export default function Assignment(props) {
               type="number"
               placeholder="1-100"
               onChange={onChange}
+              className="limit-input-size"
             />
           </InputGroup>
         </Col>
-
       </Row>
     </Form>
   )

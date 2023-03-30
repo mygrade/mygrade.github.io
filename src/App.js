@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import AssignmentList from "./AssignmentList";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import {v4 as uuidv4} from 'uuid'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
 function App() {
@@ -16,7 +19,8 @@ function App() {
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    addAssignment();
+    if(assignments.length == 0)
+      addAssignment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
@@ -81,20 +85,28 @@ function App() {
   }
   
   function calculateGrade() {
+    if(calcMethod === "radio-all"){
+      calculateAll();
+    } else if (calcMethod === "radio-best"){
+      calculateBest();
+    }
+  }
+
+  function calculateBest() {
+    let scores = [...assignments];
+    
+  }
+
+  function calculateAll() {
     let totalWeight = 0, totalPoints = 0;
     
     for(let i = 0; i < assignments.length; i++){
       let curr = assignments[i];
-      if(calcMethod === "radio-best"){
-        if(Number(curr.grade) <= testGrade){
-          continue;
-        }
-      }
       let currWeight = Number(curr.weight);
       totalWeight += currWeight
       totalPoints += (currWeight / 100) * Number(curr.grade);
     }
-    
+    // Add test grade and set final grade
     totalPoints += ((100 - totalWeight) / 100) * testGrade;
     setFinalGrade(-Math.round(-totalPoints));
   }
@@ -118,28 +130,30 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container">
-        <div className="row">
+      <div className="container" style={{maxWidth: "500px"}}>
+        <div className="">
 
           <div className="mt-3">
             <h1 className="jumbotron text-center">Calculate Grade</h1>
           </div>
           
           {/* TEST GRADE INPUT */}
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="test-grade">
-              Test Grade
-            </InputGroup.Text>
-            <Form.Control
-              name="test-grade"
-              onChange={updateTestGrade}
-              aria-label="Test Grade"
-              aria-describedby="test-grade-input"
-              placeholder="1-100"
-              type="number"
-            />
-          </InputGroup>
-
+          <div className="center-block">
+            <InputGroup className="mb-3">
+              <InputGroup.Text id="test-grade">
+                Test Grade
+              </InputGroup.Text>
+              <Form.Control
+                name="test-grade"
+                onChange={updateTestGrade}
+                aria-label="Test Grade"
+                aria-describedby="test-grade-input"
+                placeholder="1-100"
+                type="number"
+                className="limit-input-size"
+              />
+            </InputGroup>
+          </div>
           {/* FINAL GRADE DISPLAY */}
           <div className="text-center">
           <label><b>Final Grade: </b>{finalGrade}</label>
@@ -148,26 +162,41 @@ function App() {
           </div>
 
           {/* RADIO BUTTONS */}
-          <Form>
-            <div className="mb-3">
-              <Form.Check
-                label="Use Best Assignments"
-                name="calcMethod"
-                type="radio"
-                id={`radio-best`}
-                defaultChecked
-                onChange={settMethod}
-              />
-              
-              <Form.Check
-                label="Use All Assignments"
-                name="calcMethod"
-                type="radio"
-                id={`radio-all`}
-                onChange={settMethod}
-              />
-            </div>
-          </Form>
+          <div className="mb-3">
+            <Form className="mt-3">
+              <Row>
+                <Col>
+                  <Form.Check className="mt-1"
+                    label="Use Best Assignments"
+                    name="calcMethod"
+                    type="radio"
+                    id={`radio-best`}
+                    defaultChecked
+                    onChange={settMethod}
+                  />
+
+                  <Form.Check className="mt-2"
+                    label="Use All Assignments"
+                    name="calcMethod"
+                    type="radio"
+                    id={`radio-all`}
+                    onChange={settMethod}
+                    />
+                </Col>
+                <Col>
+                  <InputGroup size="sm" className="mb-3 mt-1">
+                    <InputGroup.Text id="inputGroup-sizing-sm">Min Weight</InputGroup.Text>
+                    <Form.Control
+                      style={{maxWidth: "40px"}}
+                      aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm"
+                    />
+                  </InputGroup>
+                </Col>
+
+              </Row>
+            </Form>
+          </div>
 
           {/* ADD / REMOVE ASSIGNMENTS BUTTONS */}
           <div className="mb-3" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
