@@ -14,12 +14,12 @@ function App() {
 
   const [finalGrade, setFinalGrade] = useState();
   const [errorMsg, setErrorMsg] = useState("");
-  const [calcMethod, setCalcMethod] = useState("radio-best");
+  const [calcMethod, setCalcMethod] = useState("radio-all");
   const [testGrade, setTestGrade] = useState();
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    if(assignments.length == 0)
+    if(assignments.length === 0)
       addAssignment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
@@ -93,7 +93,7 @@ function App() {
   }
 
   function calculateBest() {
-    let scores = [...assignments];
+    // let scores = [...assignments];
     
   }
 
@@ -133,8 +133,11 @@ function App() {
       <div className="container" style={{maxWidth: "500px"}}>
         <div className="">
 
-          <div className="mt-3">
-            <h1 className="jumbotron text-center">Calculate Grade</h1>
+          <div className="mt-3 mb-3 center-block">
+            <span>
+              <h1 className="inline-header">Calculate Grade</h1>
+              <h6 className="inline-header"> Beta</h6>
+            </span>
           </div>
           
           {/* TEST GRADE INPUT */}
@@ -154,9 +157,10 @@ function App() {
               />
             </InputGroup>
           </div>
+
           {/* FINAL GRADE DISPLAY */}
           <div className="text-center">
-          <label><b>Final Grade: </b>{finalGrade}</label>
+          <b>Final Grade: </b>{isNaN(finalGrade) ? " " : finalGrade}
           <br/>
           <label>{errorMsg}</label>
           </div>
@@ -171,15 +175,18 @@ function App() {
                     name="calcMethod"
                     type="radio"
                     id={`radio-best`}
-                    defaultChecked
+                    disabled
                     onChange={settMethod}
                   />
+
+                  <i>Feature in development...</i>
 
                   <Form.Check className="mt-2"
                     label="Use All Assignments"
                     name="calcMethod"
                     type="radio"
                     id={`radio-all`}
+                    defaultChecked
                     onChange={settMethod}
                     />
                 </Col>
@@ -187,6 +194,7 @@ function App() {
                   <InputGroup size="sm" className="mb-3 mt-1">
                     <InputGroup.Text id="inputGroup-sizing-sm">Min Weight</InputGroup.Text>
                     <Form.Control
+                      disabled
                       style={{maxWidth: "40px"}}
                       aria-label="Small"
                       aria-describedby="inputGroup-sizing-sm"
